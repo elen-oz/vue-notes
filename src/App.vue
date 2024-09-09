@@ -5,11 +5,20 @@ const isModalShown = ref(false);
 const newNote = ref('')
 const notes = ref([])
 
+function getRandomColor() {
+  return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
+}
+
 const addNote = () => {
   notes.value.push({
+    id: Math.floor(Math.random() * 1000000),
     text:newNote,
     date: new Date(),
+    backgroundColor: getRandomColor(),
   })
+
+  newNote.value = "";
+  isModalShown.value = false
 }
 </script>
 
@@ -18,7 +27,7 @@ const addNote = () => {
     <div v-if="isModalShown" class="overlay">
       <div class="modal">
         <textarea v-model="newNote" name="note" id="note" cols="30" rows="10"></textarea>
-        <button>Add Note</button>
+        <button @click="addNote">Add Note</button>
         <button class="close"  @click="isModalShown=false">Close</button>
       </div>
     </div>
@@ -26,6 +35,7 @@ const addNote = () => {
     <div class="container">
       <div class="header">
         <h1>Notes</h1>
+        {{notes}}
         <button @click="isModalShown=true">+</button>
       </div>
 
