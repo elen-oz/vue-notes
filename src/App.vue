@@ -1,21 +1,32 @@
 <script setup>
+import {ref} from "vue";
 
+const isModalShown = ref(false);
+const newNote = ref('')
+const notes = ref([])
+
+const addNote = () => {
+  notes.value.push({
+    text:newNote,
+    date: new Date(),
+  })
+}
 </script>
 
 <template>
   <main>
-<!--    <div class="overlay">-->
-<!--      <div class="modal">-->
-<!--        <textarea name="note" id="note" cols="30" rows="10"></textarea>-->
-<!--        <button>Add Note</button>-->
-<!--        <button class="close">Close</button>-->
-<!--      </div>-->
-<!--    </div>-->
+    <div v-if="isModalShown" class="overlay">
+      <div class="modal">
+        <textarea v-model="newNote" name="note" id="note" cols="30" rows="10"></textarea>
+        <button>Add Note</button>
+        <button class="close"  @click="isModalShown=false">Close</button>
+      </div>
+    </div>
 
     <div class="container">
       <div class="header">
         <h1>Notes</h1>
-        <button>+</button>
+        <button @click="isModalShown=true">+</button>
       </div>
 
       <div class="cards-container">
