@@ -3,6 +3,7 @@ import {ref} from "vue";
 
 const isModalShown = ref(false);
 const newNote = ref('')
+const errorMessage = ref('')
 const notes = ref([])
 
 function getRandomColor() {
@@ -10,13 +11,17 @@ function getRandomColor() {
 }
 
 const addNote = () => {
+  if(newNote.value.length<5){
+    return errorMessage.value='Text suppose to be 5 or more characters long!'
+  }
   notes.value.push({
     id: Math.floor(Math.random() * 1000000),
-    text:newNote,
+    text: newNote.value,
     date: new Date(),
     backgroundColor: getRandomColor(),
   })
 
+  errorMessage.value='';
   newNote.value = "";
   isModalShown.value = false
 }
@@ -26,7 +31,8 @@ const addNote = () => {
   <main>
     <div v-if="isModalShown" class="overlay">
       <div class="modal">
-        <textarea v-model="newNote" name="note" id="note" cols="30" rows="10"></textarea>
+        <textarea v-model.trim="newNote" name="note" id="note" cols="30" rows="10"></textarea>
+        <p class="errorMessage" v-if="errorMessage">{{errorMessage}}</p>
         <button @click="addNote">Add Note</button>
         <button class="close"  @click="isModalShown=false">Close</button>
       </div>
@@ -35,14 +41,13 @@ const addNote = () => {
     <div class="container">
       <div class="header">
         <h1>Notes</h1>
-        {{notes}}
         <button @click="isModalShown=true">+</button>
       </div>
 
       <div class="cards-container">
-        <div class="card">
-          <p class="main-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur dolor, est hic nisi placeat voluptatum.</p>
-          <p class="date">10/09/2025</p>
+        <div v-for="note in notes" class="card" :style="{backgroundColor: note.backgroundColor}" :key="note.id">
+          <p class="main-text">{{note.text}}</p>
+          <p class="date">{{note.date.toLocaleDateString('en-US')}}</p>
         </div>
       </div>
     </div>
@@ -137,10 +142,9 @@ h1{
 
 .modal .close{
   background-color: blueviolet;
+}
 
-  //border-radius: 100%;
-  //width: 2rem;
-  //height: 2rem;
-  //padding: 0.3rem;
+.errorMessage{
+  color: red;
 }
 </style>
